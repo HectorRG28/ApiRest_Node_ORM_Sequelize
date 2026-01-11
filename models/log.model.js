@@ -1,6 +1,5 @@
-const { DataTypes } = require('sequelize');
-
-module.exports = (sequelize) => {
+// src/models/log.js
+module.exports = (sequelize, DataTypes) => {
     return sequelize.define('Log', {
         id: {
             type: DataTypes.INTEGER,
@@ -11,7 +10,5 @@ module.exports = (sequelize) => {
             type: DataTypes.STRING,
             allowNull: false
         }
-    }, {
-        timestamps: true // Esto crea createdAt y updatedAt automáticamente
     });
 };

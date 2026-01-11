@@ -1,18 +1,25 @@
-const express = require('express');
-const sequelize = require('./config/db'); // O donde tengas tu conexión
-const setupAutoRoutes = require('./src/routes/autoRouter'); // El paso 3
+const { Router } = require('express');
+const router = Router();
+const db = require('../models'); // Importa tu index de modelos
+const BaseService = require('../services/BaseService');
+const BaseController = require('../controllers/BaseController');
 
-const app = express();
-app.use(express.json());
+// Recorremos todos los modelos definidos en Sequelize
+Object.keys(db.sequelize.models).forEach(modelName => {
+    const model = db.sequelize.models[modelName];
+    
+    // Instanciamos servicio y controlador para este modelo específico
+    const service = new BaseService(model);
+    const controller = new BaseController(service);
 
-// --- AQUÍ CONECTAS EL AUTOROUTER ---
-// Esto lee todos tus modelos y crea /log, /usuario, /producto, etc.
-const autoRouter = setupAutoRoutes(sequelize);
-app.use('/api', autoRouter); 
+    const routeName = modelName.toLowerCase();
 
-const PORT = 3000;
-sequelize.sync().then(() => {
-    app.listen(PORT, () => {
-        console.log(`🚀 Servidor listo en http://localhost:${PORT}/api`);
-    });
+    // Definimos las rutas automáticas
+    router.get(`/${routeName}`, controller.getAll);
+    router.get(`/${routeName}/:id`, controller.getById);
+    router.post(`/${routeName}`, controller.create);
+    
+    console.log(`✅ AutoCRUD cargado para: /${routeName}`);
 });
+
+module.exports = router;

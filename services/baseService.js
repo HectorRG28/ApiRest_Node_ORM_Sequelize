@@ -3,11 +3,11 @@ class BaseService {
         this.model = model;
     }
 
-    async getAll() {
+    async findAll() {
         return await this.model.findAll();
     }
 
-    async getById(id) {
+    async findById(id) {
         return await this.model.findByPk(id);
     }
 
@@ -15,6 +15,22 @@ class BaseService {
         return await this.model.create(data);
     }
 
-    // ... añadir update y delete
+    async update(id, data) {
+        const record = await this.model.findByPk(id);
+        if (record) {
+            return await record.update(data);
+        }
+        return null;
+    }
+
+    async delete(id) {
+        const record = await this.model.findByPk(id);
+        if (record) {
+            await record.destroy();
+            return true;
+        }
+        return false;
+    }
 }
+
 module.exports = BaseService;

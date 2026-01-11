@@ -1,16 +1,19 @@
-// src/controllers/base/BaseController.js
-export class BaseController {
+// src/controllers/BaseController.js
+class BaseController {
     constructor(service) {
         this.service = service;
     }
 
-    async getAll(req, res) {
-        try {
-            const items = await this.service.findAll();
-            res.json(items);
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    }
-    // Implementar aquí métodos para getById, create, update, delete [cite: 70]
+    getAll = async (req, res) => {
+        const items = await this.service.getAll();
+        res.json(items);
+    };
+
+    create = async (req, res) => {
+        const newItem = await this.service.create(req.body);
+        res.status(201).json(newItem);
+    };
+    
+    // ... añadir métodos para getById, update, delete
 }
+module.exports = BaseController;
